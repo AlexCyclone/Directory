@@ -11,11 +11,9 @@ import java.util.List;
 @Repository
 public interface DepartmentRepository extends JpaRepository<Department, Long> {
 
-    // used
     @Query("SELECT d FROM Department d WHERE d.id = :id")
     Department findById(@Param("id") long id);
 
-    // used
     @Query("SELECT d FROM Department d WHERE d.parentDepartment = null")
     List<Department> findRoot();
 }

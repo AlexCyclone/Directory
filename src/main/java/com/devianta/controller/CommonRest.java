@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.PUT;
+
 @RestController
 @RequestMapping("/restapi/department")
 public class CommonRest {
@@ -17,21 +20,62 @@ public class CommonRest {
     @Autowired
     private DepartmentService departmentService;
 
-    @RequestMapping(method = RequestMethod.GET)
+    // Root Department
+
+    @RequestMapping(method = GET)
     @ResponseBody
     @JsonView(View.COMMON_REST.class)
-    public Department getDepartment() {
+    public Department getRootDepartment() {
         return departmentService.findRoot();
     }
 
-    @RequestMapping(value = "/{id}/child", method = RequestMethod.GET)
+    @RequestMapping(method = PUT)
     @ResponseBody
     @JsonView(View.COMMON_REST.class)
-    public List<Department> getDepartment(@PathVariable Long id) {
-        return departmentService.findChild(id);
+    public Department saveRootDepartment(@RequestBody Department department) {
+        departmentService.saveRootDepartment(department);
+        return getRootDepartment();
     }
 
-    @RequestMapping(value = "/{id}/positions", method = RequestMethod.GET)
+    // Department
+
+    @RequestMapping(value = "/{id}", method = GET)
+    @ResponseBody
+    @JsonView(View.COMMON_REST.class)
+    public Department getDepartment(@PathVariable Long id) {
+        return departmentService.findById(id);
+    }
+
+    @RequestMapping(value = "/{id}", method = PUT)
+    @ResponseBody
+    @JsonView(View.COMMON_REST.class)
+    public Department modifyDepartment(@PathVariable Long id, @RequestBody Department department) {
+        departmentService.modifyDepartment(id, department);
+        return departmentService.findById(id);
+    }
+
+    // Child Departments
+
+    @RequestMapping(value = "/{parentId}/child", method = GET)
+    @ResponseBody
+    @JsonView(View.COMMON_REST.class)
+    public List<Department> getChildDepartments(@PathVariable Long parentId) {
+        return departmentService.findChildDepartment(parentId);
+    }
+
+    @RequestMapping(value = "/{parentId}/child", method = PUT)
+    @ResponseBody
+    @JsonView(View.COMMON_REST.class)
+    public List<Department> putChildDepartments(@PathVariable Long parentId, @RequestBody Department childDepartment) {
+        departmentService.saveChildDepartment(parentId, childDepartment);
+        return departmentService.findChildDepartment(parentId);
+    }
+
+
+
+    // Positions
+
+    @RequestMapping(value = "/{id}/positions", method = GET)
     @ResponseBody
     @JsonView(View.COMMON_REST.class)
     public List<Position> getPosition(@PathVariable Long id) {

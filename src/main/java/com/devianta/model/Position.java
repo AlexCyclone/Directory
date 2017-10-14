@@ -31,5 +31,4 @@ public class Position {
     @OneToOne(mappedBy = "position", fetch = FetchType.LAZY, cascade = ALL)
     @JsonView(View.COMMON_REST.class)
     private Person person;
-
 }

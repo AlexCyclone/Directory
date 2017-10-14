@@ -1,26 +1,34 @@
 package com.devianta.model.contact;
 
+import com.devianta.model.Service;
 import com.devianta.model.View;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.*;
+import lombok.experimental.Tolerate;
 
 import javax.persistence.*;
 
-import static javax.persistence.CascadeType.*;
-import static javax.persistence.FetchType.*;
+import static javax.persistence.FetchType.LAZY;
 
 @Entity
 @Table
-@AllArgsConstructor(staticName = "getNew")
-@NoArgsConstructor
+@Builder
+@AllArgsConstructor
 @Getter
 @Setter
+@EqualsAndHashCode(doNotUseGetters = true, exclude = {"id", "contact", "name", "common"})
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @Column(nullable = false, length = 100)
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn
+    private DepartmentContact contact;
+
+    @Column(nullable = false, length = 50)
     @JsonView(View.COMMON_REST.class)
     private String name;
 
@@ -57,10 +65,49 @@ public class Address {
     private String office;
 
     @Column(nullable = false)
-    private boolean common;
+    @JsonView(View.COMMON_REST.class)
+    private Boolean common;
 
-    @ManyToOne(fetch = LAZY, cascade = ALL)
-    @JoinColumn
-    private DepartmentContact contact;
+    @Tolerate
+    public Address() {
+    }
+
+    public boolean isValid() {
+        if (Service.containNull(common)
+                || Service.containEmptyOrLimit(50, name)) {
+            return false;
+        }
+
+        if (Service.containAlongEmptyOrLimit(50
+                , zipCode, country, region, district, city, street, house, office)) {
+            return false;
+        }
+
+        if (name.equals("") || name.length() > 50) {
+            return false;
+        }
+        if (zipCode != null && (zipCode.equals("") || zipCode.length() > 50)) {
+            return false;
+        }
+        return true;
+    }
+
+
+    public void normalise() throws IllegalArgumentException {
+        name = Service.safeTrim(name);
+        zipCode = Service.safeTrim(zipCode);
+        country = Service.safeTrim(country);
+        region = Service.safeTrim(region);
+        district = Service.safeTrim(district);
+        city = Service.safeTrim(city);
+        street = Service.safeTrim(street);
+        house = Service.safeTrim(house);
+        office = Service.safeTrim(office);
+        common = Service.defaultTrue(common);
+
+        if (!isValid()) {
+            throw new IllegalArgumentException("Invalid address parameters");
+        }
+    }
 
 }

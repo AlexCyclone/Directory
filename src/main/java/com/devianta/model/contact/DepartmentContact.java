@@ -2,8 +2,12 @@ package com.devianta.model.contact;
 
 import com.devianta.model.Department;
 import com.devianta.model.View;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.*;
+import lombok.experimental.Tolerate;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -14,38 +18,102 @@ import static javax.persistence.FetchType.*;
 
 @Entity
 @Table
-@RequiredArgsConstructor
-@NoArgsConstructor
+@Builder
+@AllArgsConstructor
 @Getter
 @Setter
+@JsonIgnoreProperties(ignoreUnknown=true)
 public class DepartmentContact {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @NonNull
     @OneToOne(fetch = LAZY)
     @JoinColumn(nullable = false)
     private Department department;
 
-    @OneToMany(mappedBy = "contact", fetch = LAZY, cascade = ALL)
+    @Singular
+    @OneToMany(mappedBy = "contact", fetch = EAGER, cascade = ALL)
+    @Fetch(FetchMode.SUBSELECT)
     @JsonView(View.COMMON_REST.class)
-    private List<Address> addresses = new ArrayList<>();
+    private List<Address> addresses;
 
-    @OneToMany(mappedBy = "contact", fetch = LAZY, cascade = ALL)
+    @Singular
+    @OneToMany(mappedBy = "contact", fetch = EAGER, cascade = ALL)
+    @Fetch(FetchMode.SUBSELECT)
     @JsonView(View.COMMON_REST.class)
-    private List<Email> emails = new ArrayList<>();
+    private List<Email> emails;
 
-    @OneToMany(mappedBy = "contact", fetch = LAZY, cascade = ALL)
+    @Singular
+    @OneToMany(mappedBy = "contact", fetch = EAGER, cascade = ALL)
+    @Fetch(FetchMode.SUBSELECT)
     @JsonView(View.COMMON_REST.class)
-    private List<Phone> phones = new ArrayList<>();
+    private List<Phone> phones;
 
-    @OneToMany(mappedBy = "contact", fetch = LAZY, cascade = ALL)
+    @Singular
+    @OneToMany(mappedBy = "contact", fetch = EAGER, cascade = ALL)
+    @Fetch(FetchMode.SUBSELECT)
     @JsonView(View.COMMON_REST.class)
-    private List<Site> sites = new ArrayList<>();
+    private List<OtherInfo> others;
 
-    @OneToMany(mappedBy = "contact", fetch = LAZY, cascade = ALL)
-    @JsonView(View.COMMON_REST.class)
-    private List<OtherInfo> otherInfos = new ArrayList<>();
+    @Tolerate
+    public DepartmentContact() {
+        addresses = new ArrayList<>();
+        emails = new ArrayList<>();
+        phones = new ArrayList<>();
+        others = new ArrayList<>();
+    }
 
+    public boolean isValid() {
+        if (department == null) {
+            return false;
+        }
+        return true;
+    }
+
+    public void normalise() throws IllegalArgumentException {
+        if (!isValid()) {
+            throw new IllegalArgumentException("Department in contact not set");
+        }
+        normaliseAddresses();
+        normaliseEmails();
+        normalisePhones();
+        normaliseOthers();
+    }
+
+    public void normaliseAddresses() {
+        if (addresses != null) {
+            for (Address a: addresses) {
+                a.setContact(this);
+                a.normalise();
+            }
+        }
+    }
+
+    public void normaliseEmails() {
+        if (emails != null) {
+            for (Email e: emails) {
+                e.setContact(this);
+                e.normalise();
+            }
+        }
+    }
+
+    public void normalisePhones() {
+        if (phones != null) {
+            for (Phone p: phones) {
+                p.setContact(this);
+                p.normalise();
+            }
+        }
+    }
+
+    public void normaliseOthers() {
+        if (others != null) {
+            for (OtherInfo o: others) {
+                o.setContact(this);
+                o.normalise();
+            }
+        }
+    }
 }

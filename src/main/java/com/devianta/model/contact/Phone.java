@@ -1,40 +1,70 @@
 package com.devianta.model.contact;
 
+import com.devianta.model.Service;
 import com.devianta.model.View;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonView;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
-import static javax.persistence.CascadeType.ALL;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import static javax.persistence.FetchType.LAZY;
 
 @Entity
 @Table
-@AllArgsConstructor(staticName = "getNew")
 @NoArgsConstructor
+@RequiredArgsConstructor(staticName = "getNew")
 @Getter
 @Setter
+@EqualsAndHashCode(doNotUseGetters = true, exclude = {"id", "contact", "name", "common"})
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Phone {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @Column(nullable = false, length = 100)
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn
+    private DepartmentContact contact;
+
+    @NonNull
+    @Column(nullable = false, length = 50)
     @JsonView(View.COMMON_REST.class)
     private String name;
 
+    @NonNull
     @Column(nullable = false, length = 15)
     @JsonView(View.COMMON_REST.class)
     private String number;
 
-    @ManyToOne(fetch = LAZY, cascade = ALL)
-    @JoinColumn
-    private DepartmentContact contact;
-
     @Column(nullable = false)
-    private boolean common;
+    @JsonView(View.COMMON_REST.class)
+    private Boolean common;
+
+    public boolean isValid() {
+        if (Service.containNull(common, number)
+                || Service.containEmptyOrLimit(50, name)) {
+            return false;
+        }
+
+        Pattern pattern = Pattern.compile("\\+*\\d+");
+        Matcher matcher = pattern.matcher(number);
+        if (!matcher.matches() || number.length() > 15) {
+            return false;
+        }
+        return true;
+    }
+
+    public void normalise() throws IllegalArgumentException {
+        name = Service.safeTrim(name);
+        number = Service.safeTrim(number);
+        common = Service.defaultTrue(common);
+
+        if (!isValid()) {
+            throw new IllegalArgumentException("Invalid phone parameters");
+        }
+    }
 }
