@@ -1,15 +1,21 @@
 Directory API (ver 1.0.2):
-auth none
------------------------------------------------------------------------------
-Department object format
+auth: none
 
-Minimum filling of the object:
+Current data source properties:
+url=jdbc:mysql://localhost:3306/directory
+username=directoryadmin
+password=dirpassword
+When you run, a test hierarchy of objects is created.
+-----------------------------------------------------------------------------
+Department object format detail:
+
+Minimum filling of the object (api response):
 {
-    "id": 1,
+    "id": 1,               - id (will be ignore in put request)
     "name": "c",           - null and "" not support (further for String object - not null)
     "contact": null,       - nullable
-    "hasPositions": false, - property
-    "hasChild": true       - property
+    "hasPositions": false, - property (will be ignore in put request)
+    "hasChild": true       - property (will be ignore in put request)
 }
 
 Maximum filling of the object:
@@ -61,8 +67,19 @@ Maximum filling of the object:
     "hasPositions": false,
     "hasChild": true
 }
+
+Expected object in PUT request (other fields will be ignored):
+{
+    "name": "company",      - not null
+    "contact": {            - nullable
+        "addresses": [],
+        "emails": [],
+        "phones": [],
+        "others": []
+    }
+}
 -----------------------------------------------------------------------------
-Contact object format
+Contact object format detail:
 
 Minimum filling of the object:
 {
@@ -110,10 +127,31 @@ Maximum filling of the object:
         }
     ]
 }
-
-
+-----------------------------------------------------------------------------
 (GET) http://localhost:8060/restapi/department
 Возвращает обьект JSON соответствующий корневому департаменту
+В случает отсутствия обьекта возвращает null
 
 (PUT) http://localhost:8060/restapi/department
 Сохраняет корневой департамент (производит изменение в случае существования корневого департамента)
+Обнаруженные проблемы:
+- ЕСТЬ ПРОБЛЕМА ПРИ МОДИФИКАЦИИ ИЛИ УДАЛЕНИИ КОНТАКТНЫХ ДАННЫХ!
+----------
+(GET) http://localhost:8060/restapi/department/{id}
+Возвращает обьект Department с соответствующим id
+В случает отсутствия обьекта возвращает null
+
+(PUT) http://localhost:8060/restapi/department/{id}
+Изменяет обьект Department с соответствующим id (обьект с указанным id должен быть создан)
+Дубликаты обьетов внутри родительского обьекта контролируются, в случае обнаружения дубликата возвращается ошибка.
+Обнаруженные проблемы:
+- ЕСТЬ ПРОБЛЕМА ПРИ МОДИФИКАЦИИ ИЛИ УДАЛЕНИИ КОНТАКТНЫХ ДАННЫХ!
+----------
+(GET) http://localhost:8060/restapi/department/{id}/child
+Возвращает массив дочерних обьектов Department подчиненных обьекту с указанным id
+В случает отсутствия обьектов возвращает []
+
+(PUT) http://localhost:8060/restapi/department/{id}/child
+Добавляет новый дочерний обьект Department подчиненных обьекту с указанным id
+Дубликаты обьетов внутри родительского обьекта контролируются, в случае обнаружения дубликата возвращается ошибка.
+----------
