@@ -15,6 +15,8 @@ public class DepartmentService {
     @Autowired
     private DepartmentRepository departmentRepository;
 
+
+
     @Transactional(readOnly = true)
     public Department findById(Long id) {
         return departmentRepository.findById(id);
@@ -91,6 +93,7 @@ public class DepartmentService {
 
         // Set id, normalise contact
         department.setId(departmentFromBase.getId());
+
         saveDepartment(department.normalise());
     }
 

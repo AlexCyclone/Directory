@@ -15,6 +15,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
 @RestController
 @RequestMapping("/restapi/department")
+@CrossOrigin(origins = "*")
 public class CommonRest {
 
     @Autowired
