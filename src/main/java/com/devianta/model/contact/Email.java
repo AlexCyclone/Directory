@@ -40,6 +40,7 @@ public class Email {
     @JsonView(View.COMMON_REST.class)
     private String email;
 
+    @NonNull
     @Column(nullable = false)
     @JsonView(View.COMMON_REST.class)
     private Boolean common;

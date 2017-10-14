@@ -40,6 +40,7 @@ public class Phone {
     @JsonView(View.COMMON_REST.class)
     private String number;
 
+    @NonNull
     @Column(nullable = false)
     @JsonView(View.COMMON_REST.class)
     private Boolean common;

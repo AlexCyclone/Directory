@@ -37,6 +37,7 @@ public class OtherInfo {
     @JsonView(View.COMMON_REST.class)
     private String value;
 
+    @NonNull
     @Column(nullable = false)
     @JsonView(View.COMMON_REST.class)
     private Boolean common;

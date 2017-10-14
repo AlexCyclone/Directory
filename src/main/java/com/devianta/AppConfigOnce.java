@@ -64,6 +64,7 @@ public class AppConfigOnce {
                                 .district("  Подільський район  ")
                                 .street("  вул. Боричів тік  ")
                                 .house("  28  ")
+                                .common(true)
                                 .build())
                         .address(Address.builder()
                                 .name("додаткова")
@@ -72,11 +73,12 @@ public class AppConfigOnce {
                                 .district("Подільський район")
                                 .street("вул. Боричів тік")
                                 .house("30")
+                                .common(true)
                                 .build())
-                        .email(Email.getNew("  E-mail  ", " fssu@fssu.gov.ua "))
-                        .phone(Phone.getNew(" гаряча лінія ", " 0800501892 "))
-                        .phone(Phone.getNew(" тел./факс ", "  0442060401 "))
-                        .other(OtherInfo.getNew(" www ", "  http://www.fssu.gov.ua  "))
+                        .email(Email.getNew("  E-mail  ", " fssu@fssu.gov.ua ", true))
+                        .phone(Phone.getNew(" гаряча лінія ", " 0800501892 ", true))
+                        .phone(Phone.getNew(" тел./факс ", "  0442060401 ", true))
+                        .other(OtherInfo.getNew(" www ", "  http://www.fssu.gov.ua  ", true))
                         .build())
                 .build();
         departmentService.saveChildDepartment(root.getId(), vd);
@@ -84,7 +86,7 @@ public class AppConfigOnce {
         Department dept1 = Department.builder()
                 .name("Департамент фінансово-економічної діяльності")
                 .contact(DepartmentContact.builder()
-                        .email(Email.getNew("E-mail", "finance@fssu.gov.ua"))
+                        .email(Email.getNew("E-mail", "finance@fssu.gov.ua", true))
                         .build())
                 .build();
         departmentService.saveChildDepartment(vd.getId(), dept1);
@@ -92,7 +94,7 @@ public class AppConfigOnce {
         Department dept11 = Department.builder()
                 .name("Відділ бюджетного планування")
                 .contact(DepartmentContact.builder()
-                        .email(Email.getNew("E-mail", "budget@fssu.gov.ua"))
+                        .email(Email.getNew("E-mail", "budget@fssu.gov.ua", true))
                         .build())
                 .build();
         departmentService.saveChildDepartment(dept1.getId(), dept11);
@@ -100,7 +102,7 @@ public class AppConfigOnce {
         Department dept12 = Department.builder()
                 .name("Відділ фінансування видатків")
                 .contact(DepartmentContact.builder()
-                        .email(Email.getNew("E-mail", "fv@fssu.gov.ua"))
+                        .email(Email.getNew("E-mail", "fv@fssu.gov.ua", true))
                         .build())
                 .build();
         departmentService.saveChildDepartment(dept1.getId(), dept12);
@@ -108,7 +110,7 @@ public class AppConfigOnce {
         Department dept13 = Department.builder()
                 .name("Відділ фінансової звітності, економічного аналізу та методологічної роботи")
                 .contact(DepartmentContact.builder()
-                        .email(Email.getNew("E-mail", "zvit@fssu.gov.ua"))
+                        .email(Email.getNew("E-mail", "zvit@fssu.gov.ua", true))
                         .build())
                 .build();
         departmentService.saveChildDepartment(dept1.getId(), dept13);
@@ -117,7 +119,7 @@ public class AppConfigOnce {
         Department dept2 = Department.builder()
                 .name("Департамент бухгалтерського обліку та консолідованої звітності")
                 .contact(DepartmentContact.builder()
-                        .email(Email.getNew("E-mail", "finance@fssu.gov.ua"))
+                        .email(Email.getNew("E-mail", "finance@fssu.gov.ua", true))
                         .build())
                 .build();
         departmentService.saveChildDepartment(vd.getId(), dept2);
@@ -125,7 +127,7 @@ public class AppConfigOnce {
         Department dept21 = Department.builder()
                 .name("Відділ бухгалтерського обліку апарату виконавчої дирекції Фонду")
                 .contact(DepartmentContact.builder()
-                        .email(Email.getNew("E-mail", "buh@fssu.gov.ua"))
+                        .email(Email.getNew("E-mail", "buh@fssu.gov.ua", true))
                         .build())
                 .build();
         departmentService.saveChildDepartment(dept2.getId(), dept21);
@@ -133,7 +135,7 @@ public class AppConfigOnce {
         Department dept22 = Department.builder()
                 .name("Відділ консолідованої звітності Фонду")
                 .contact(DepartmentContact.builder()
-                        .email(Email.getNew("E-mail", "kzv@fssu.gov.ua"))
+                        .email(Email.getNew("E-mail", "kzv@fssu.gov.ua", true))
                         .build())
                 .build();
         departmentService.saveChildDepartment(dept2.getId(), dept22);
@@ -141,7 +143,7 @@ public class AppConfigOnce {
         Department dept23 = Department.builder()
                 .name("Відділ розрахунків з оплати праці")
                 .contact(DepartmentContact.builder()
-                        .email(Email.getNew("E-mail", "zp@fssu.gov.ua"))
+                        .email(Email.getNew("E-mail", "zp@fssu.gov.ua", true))
                         .build())
                 .build();
         departmentService.saveChildDepartment(dept2.getId(), dept23);
