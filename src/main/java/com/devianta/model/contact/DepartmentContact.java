@@ -64,11 +64,8 @@ public class DepartmentContact {
         others = new ArrayList<>();
     }
 
-    public boolean isValid() {
-        if (department == null) {
-            return false;
-        }
-        return true;
+    private boolean isValid() {
+        return department != null;
     }
 
     public void normalise() throws IllegalArgumentException {
@@ -81,39 +78,47 @@ public class DepartmentContact {
         normaliseOthers();
     }
 
-    public void normaliseAddresses() {
+    private void normaliseAddresses() {
         if (addresses != null) {
             for (Address a: addresses) {
                 a.setContact(this);
                 a.normalise();
             }
+        } else {
+            addresses = new ArrayList<>();
         }
     }
 
-    public void normaliseEmails() {
+    private void normaliseEmails() {
         if (emails != null) {
             for (Email e: emails) {
                 e.setContact(this);
                 e.normalise();
             }
+        } else {
+            emails = new ArrayList<>();
         }
     }
 
-    public void normalisePhones() {
+    private void normalisePhones() {
         if (phones != null) {
             for (Phone p: phones) {
                 p.setContact(this);
                 p.normalise();
             }
+        } else {
+            phones = new ArrayList<>();
         }
     }
 
-    public void normaliseOthers() {
+    private void normaliseOthers() {
         if (others != null) {
             for (OtherInfo o: others) {
                 o.setContact(this);
                 o.normalise();
             }
+        } else {
+            others = new ArrayList<>();
         }
     }
 }
