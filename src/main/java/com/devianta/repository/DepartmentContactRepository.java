@@ -1,5 +1,6 @@
 package com.devianta.repository;
 
+import com.devianta.model.Department;
 import com.devianta.model.contact.DepartmentContact;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -12,6 +13,6 @@ public interface DepartmentContactRepository extends JpaRepository<DepartmentCon
     @Query("SELECT c FROM DepartmentContact c WHERE c.id = :id")
     DepartmentContact findById(@Param("id") long id);
 
-    @Query("SELECT c FROM DepartmentContact c WHERE c.department = id")
-    DepartmentContact findByDepartmentId(@Param("id") long id);
+    @Query("SELECT c FROM DepartmentContact c WHERE c.department = :department")
+    DepartmentContact findByDepartment(@Param("department") Department department);
 }
