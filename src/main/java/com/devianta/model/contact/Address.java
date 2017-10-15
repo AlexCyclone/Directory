@@ -26,7 +26,7 @@ public class Address {
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn
-    private DepartmentContact contact;
+    private Contact contact;
 
     @Column(nullable = false, length = 50)
     @JsonView(View.COMMON_REST.class)

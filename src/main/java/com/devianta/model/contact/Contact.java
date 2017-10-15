@@ -1,6 +1,7 @@
 package com.devianta.model.contact;
 
 import com.devianta.model.Department;
+import com.devianta.model.Person;
 import com.devianta.model.View;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -23,53 +24,56 @@ import static javax.persistence.FetchType.*;
 @Getter
 @Setter
 @JsonIgnoreProperties(ignoreUnknown=true)
-public class DepartmentContact {
+public class Contact {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @JsonView(View.COMMON_REST.class)
     private long id;
 
     @OneToOne(fetch = LAZY)
-    @JoinColumn(nullable = false)
     private Department department;
 
+    @OneToOne(fetch = LAZY)
+    private Person person;
+
     @Singular
-    @OneToMany(mappedBy = "contact", fetch = EAGER, cascade = ALL)
+    @OneToMany(mappedBy = "contact", fetch = EAGER, cascade = ALL, orphanRemoval = true)
     @Fetch(FetchMode.SUBSELECT)
     @JsonView(View.COMMON_REST.class)
     private List<Address> addresses;
 
     @Singular
-    @OneToMany(mappedBy = "contact", fetch = EAGER, cascade = ALL)
+    @OneToMany(mappedBy = "contact", fetch = EAGER, cascade = ALL, orphanRemoval = true)
     @Fetch(FetchMode.SUBSELECT)
     @JsonView(View.COMMON_REST.class)
     private List<Email> emails;
 
     @Singular
-    @OneToMany(mappedBy = "contact", fetch = EAGER, cascade = ALL)
+    @OneToMany(mappedBy = "contact", fetch = EAGER, cascade = ALL, orphanRemoval = true)
     @Fetch(FetchMode.SUBSELECT)
     @JsonView(View.COMMON_REST.class)
     private List<Phone> phones;
 
     @Singular
-    @OneToMany(mappedBy = "contact", fetch = EAGER, cascade = ALL)
+    @OneToMany(mappedBy = "contact", fetch = EAGER, cascade = ALL, orphanRemoval = true)
     @Fetch(FetchMode.SUBSELECT)
     @JsonView(View.COMMON_REST.class)
     private List<OtherInfo> others;
 
     @Tolerate
-    public DepartmentContact() {
+    public Contact() {
         addresses = new ArrayList<>();
         emails = new ArrayList<>();
         phones = new ArrayList<>();
         others = new ArrayList<>();
     }
 
-    public DepartmentContact normalise() throws IllegalArgumentException {
+    public Contact normalise() throws IllegalArgumentException {
         normaliseAddresses();
         normaliseEmails();
         normalisePhones();
         normaliseOthers();
-        if (department == null) {
+        if (department == null && person == null) {
             throw new IllegalArgumentException("Invalid Contact parameters");
         }
         return this;

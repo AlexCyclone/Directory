@@ -8,9 +8,6 @@ import lombok.*;
 
 import javax.persistence.*;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import static javax.persistence.FetchType.LAZY;
 
 @Entity
@@ -28,7 +25,7 @@ public class Email {
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn
-    private DepartmentContact contact;
+    private Contact contact;
 
     @NonNull
     @Column(nullable = false, length = 50)

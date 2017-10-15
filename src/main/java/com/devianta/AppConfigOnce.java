@@ -58,7 +58,7 @@ public class AppConfigOnce {
         Department root = departmentService.findRoot();
         Department vd = Department.builder()
                 .name("  Виконавча дирекція   ")
-                .contact(DepartmentContact.builder()
+                .contact(Contact.builder()
                         .address(Address.builder()
                                 .name(" основна  ")
                                 .zipCode("  00000  ")
@@ -78,7 +78,7 @@ public class AppConfigOnce {
                                 .common(true)
                                 .build())
                         .email(Email.getNew("  E-mail  ", " fssu@fssu.gov.ua ", true))
-                        .phone(Phone.getNew(" гаряча лінія ", " +0800501892 ", true))
+                        .phone(Phone.getNew(" гаряча лінія ", " 0800501892 ", true))
                         .phone(Phone.getNew(" тел./факс ", "  0442060401 ", true))
                         .other(OtherInfo.getNew(" www ", "  http://www.fssu.gov.ua  ", true))
                         .build())
@@ -87,7 +87,7 @@ public class AppConfigOnce {
 
         Department dept1 = Department.builder()
                 .name("Департамент фінансово-економічної діяльності")
-                .contact(DepartmentContact.builder()
+                .contact(Contact.builder()
                         .email(Email.getNew("E-mail", "finance@fssu.gov.ua", true))
                         .build())
                 .build();
@@ -95,7 +95,7 @@ public class AppConfigOnce {
 
         Department dept11 = Department.builder()
                 .name("Відділ бюджетного планування")
-                .contact(DepartmentContact.builder()
+                .contact(Contact.builder()
                         .email(Email.getNew("E-mail", "budget@fssu.gov.ua", true))
                         .build())
                 .build();
@@ -103,7 +103,7 @@ public class AppConfigOnce {
 
         Department dept12 = Department.builder()
                 .name("Відділ фінансування видатків")
-                .contact(DepartmentContact.builder()
+                .contact(Contact.builder()
                         .email(Email.getNew("E-mail", "fv@fssu.gov.ua", true))
                         .build())
                 .build();
@@ -111,7 +111,7 @@ public class AppConfigOnce {
 
         Department dept13 = Department.builder()
                 .name("Відділ фінансової звітності, економічного аналізу та методологічної роботи")
-                .contact(DepartmentContact.builder()
+                .contact(Contact.builder()
                         .email(Email.getNew("E-mail", "zvit@fssu.gov.ua", true))
                         .build())
                 .build();
@@ -120,7 +120,7 @@ public class AppConfigOnce {
 
         Department dept2 = Department.builder()
                 .name("Департамент бухгалтерського обліку та консолідованої звітності")
-                .contact(DepartmentContact.builder()
+                .contact(Contact.builder()
                         .email(Email.getNew("E-mail", "finance@fssu.gov.ua", true))
                         .build())
                 .build();
@@ -128,7 +128,7 @@ public class AppConfigOnce {
 
         Department dept21 = Department.builder()
                 .name("Відділ бухгалтерського обліку апарату виконавчої дирекції Фонду")
-                .contact(DepartmentContact.builder()
+                .contact(Contact.builder()
                         .email(Email.getNew("E-mail", "buh@fssu.gov.ua", true))
                         .build())
                 .build();
@@ -136,7 +136,7 @@ public class AppConfigOnce {
 
         Department dept22 = Department.builder()
                 .name("Відділ консолідованої звітності Фонду")
-                .contact(DepartmentContact.builder()
+                .contact(Contact.builder()
                         .email(Email.getNew("E-mail", "kzv@fssu.gov.ua", true))
                         .build())
                 .build();
@@ -144,7 +144,7 @@ public class AppConfigOnce {
 
         Department dept23 = Department.builder()
                 .name("Відділ розрахунків з оплати праці")
-                .contact(DepartmentContact.builder()
+                .contact(Contact.builder()
                         .email(Email.getNew("E-mail", "zp@fssu.gov.ua", true))
                         .build())
                 .build();
@@ -152,15 +152,25 @@ public class AppConfigOnce {
 
         departmentService.savePosition(vd.getId(), Position.builder()
                 .namePosition(" Директор  ")
-                .person(Person.getNew(" Баженков  ", " Євген ", "  Володимирович "))
+                .person(Person.getNew(" Баженков  ", " Євген ", "  Володимирович ")
+                .chainSetContact(Contact.builder()
+                        .phone(Phone.getNew("тел.", "000000", true))
+                        .build()))
                 .build());
         departmentService.savePosition(vd.getId(), Position.builder()
                 .namePosition("Заступник директора")
-                .person(Person.getNew("Блажинська", "Тетяна", "Олександрівна"))
+                .person(Person.getNew("Блажинська", "Тетяна", "Олександрівна")
+                        .chainSetContact(Contact.builder()
+                                .phone(Phone.getNew("тел.", "000000", true))
+                                .email(Email.getNew("E-mail", "bto@fssu.gov.ua", true))
+                                .build()))
                 .build());
         departmentService.savePosition(vd.getId(), Position.builder()
                 .namePosition("Заступник директора")
-                .person(Person.getNew("Забела", "Володимир", "Юрійович"))
+                .person(Person.getNew("Забела", "Володимир", "Юрійович")
+                        .chainSetContact(Contact.builder()
+                                .phone(Phone.getNew("тел.", "000000", true))
+                                .build()))
                 .build());
         departmentService.savePosition(vd.getId(), Position.builder()
                 .namePosition("Заступник директора")

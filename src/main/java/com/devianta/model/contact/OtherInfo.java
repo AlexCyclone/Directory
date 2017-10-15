@@ -25,7 +25,7 @@ public class OtherInfo {
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn
-    private DepartmentContact contact;
+    private Contact contact;
 
     @NonNull
     @Column(nullable = false, length = 50)

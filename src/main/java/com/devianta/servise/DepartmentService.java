@@ -3,7 +3,7 @@ package com.devianta.servise;
 import com.devianta.model.Department;
 import com.devianta.model.Person;
 import com.devianta.model.Position;
-import com.devianta.model.contact.DepartmentContact;
+import com.devianta.model.contact.Contact;
 import com.devianta.repository.DepartmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,6 +33,9 @@ public class DepartmentService {
         if (department.getId() > 0) {
             clearContact(department);
         }
+        if (department.getContact() != null) {
+            department.getContact().setId(0);
+        }
 
         // Has root
         Department parent = department.getParentDepartment();
@@ -54,7 +57,7 @@ public class DepartmentService {
 
     @Transactional
     public void clearContact(Department department) {
-        DepartmentContact contact = contactService.findByDepartment(department);
+        Contact contact = contactService.findByDepartment(department);
         if (contact != null) {
             contactService.deleteContact(contact);
         }
@@ -108,9 +111,8 @@ public class DepartmentService {
         // Set parent
         department.setParentDepartment(departmentFromBase.getParentDepartment());
 
-        // Set id, normalise contact
+        // Set id
         department.setId(departmentFromBase.getId());
-
         saveDepartment(department.normalise());
     }
 
@@ -131,7 +133,7 @@ public class DepartmentService {
         }
 
         // Reset id, set parent, normalise contact
-        department.normaliseContact().setId(0);
+        department.setId(0);
         department.setParentDepartment(parent);
         saveDepartment(department.normalise());
     }

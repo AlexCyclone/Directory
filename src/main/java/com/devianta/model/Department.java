@@ -1,6 +1,6 @@
 package com.devianta.model;
 
-import com.devianta.model.contact.DepartmentContact;
+import com.devianta.model.contact.Contact;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.*;
@@ -48,7 +48,7 @@ public class Department implements Serializable {
     @OneToOne(mappedBy = "department", fetch = FetchType.EAGER, cascade = ALL)
     @Fetch(FetchMode.JOIN)
     @JsonView(View.COMMON_REST.class)
-    private DepartmentContact contact;
+    private Contact contact;
 
     @Tolerate
     public Department() {
@@ -73,19 +73,15 @@ public class Department implements Serializable {
 
     public Department normalise() throws IllegalArgumentException {
         name = Service.safeTrimEmptyToNull(name);
-        normaliseContact();
+
+        if (contact != null) {
+            contact.setDepartment(this);
+            contact.normalise();
+        }
+
         if (Service.nullOrLimit(1, 500, name)) {
             throw new IllegalArgumentException("Invalid Department parameters");
         }
-        return this;
-    }
-
-    public Department normaliseContact() throws IllegalArgumentException {
-        if (contact == null) {
-            return this;
-        }
-        contact.setDepartment(this);
-        contact.normalise();
         return this;
     }
 }
