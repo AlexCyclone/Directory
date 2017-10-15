@@ -64,18 +64,15 @@ public class DepartmentContact {
         others = new ArrayList<>();
     }
 
-    private boolean isValid() {
-        return department != null;
-    }
-
-    public void normalise() throws IllegalArgumentException {
-        if (!isValid()) {
-            throw new IllegalArgumentException("Department in contact not set");
-        }
+    public DepartmentContact normalise() throws IllegalArgumentException {
         normaliseAddresses();
         normaliseEmails();
         normalisePhones();
         normaliseOthers();
+        if (department == null) {
+            throw new IllegalArgumentException("Invalid Contact parameters");
+        }
+        return this;
     }
 
     private void normaliseAddresses() {

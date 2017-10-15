@@ -43,30 +43,16 @@ public class Email {
     @NonNull
     @Column(nullable = false)
     @JsonView(View.COMMON_REST.class)
-    private Boolean common;
-
-    public boolean isValid() {
-        if (Service.containNull(common, email)
-                || Service.containEmptyOrLimit(50, name)) {
-            return false;
-        }
-
-        Pattern pattern = Pattern.compile("(\\S+)@(\\S+)");
-        Matcher matcher = pattern.matcher(email);
-        if (!matcher.matches() || email.length() > 100) {
-            return false;
-        }
-
-        return true;
-    }
+    private boolean common;
 
     public void normalise() throws IllegalArgumentException {
-        name = Service.safeTrim(name);
-        email = Service.safeTrim(email);
-        common = Service.defaultTrue(common);
+        name = Service.safeTrimEmptyToNull(name);
+        email = Service.safeTrimEmptyToNull(email);
 
-        if (!isValid()) {
-            throw new IllegalArgumentException("Invalid email parameters");
+        if (Service.nullOrLimit(1, 50, name)
+                || Service.nullOrLimit(1, 100, email)
+                || !Service.patternMatch(email, "(\\S+)@(\\S+)")) {
+            throw new IllegalArgumentException("Invalid Email parameters");
         }
     }
 }

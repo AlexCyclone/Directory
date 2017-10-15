@@ -1,6 +1,7 @@
 package com.devianta.servise;
 
 import com.devianta.model.Department;
+import com.devianta.model.Person;
 import com.devianta.model.Position;
 import com.devianta.model.contact.DepartmentContact;
 import com.devianta.repository.DepartmentRepository;
@@ -18,6 +19,9 @@ public class DepartmentService {
 
     @Autowired
     private DepartmentContactService contactService;
+
+    @Autowired
+    private PositionService positionService;
 
     @Transactional(readOnly = true)
     public Department findById(Long id) {
@@ -135,8 +139,8 @@ public class DepartmentService {
     // Positions
 
     @Transactional(readOnly = true)
-    public List<Position> findPositionInDepartment(Long id) {
-        Department dept = findById(id);
+    public List<Position> findPositions(Long departmentId) {
+        Department dept = findById(departmentId);
         if (dept == null) {
             return new ArrayList<>();
         }
@@ -144,12 +148,19 @@ public class DepartmentService {
     }
 
     @Transactional
-    public void deleteDepartment(Long id) {
-        departmentRepository.delete(id);
+    public void savePosition(Long departmentId, Position position) {
+        Department dept = findById(departmentId);
+        if (dept == null) {
+            throw new IllegalArgumentException("Department id not found");
+        }
+
+        position.setId(0);
+        position.setDepartment(dept);
+        Person person = position.getPerson();
+        if (person != null) {
+            person.setId(0);
+        }
+        positionService.save(position);
     }
 
-    @Transactional
-    public void deleteDepartment(Department department) {
-        departmentRepository.delete(department.getId());
-    }
 }

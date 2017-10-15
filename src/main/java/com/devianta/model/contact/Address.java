@@ -66,47 +66,27 @@ public class Address {
 
     @Column(nullable = false)
     @JsonView(View.COMMON_REST.class)
-    private Boolean common;
+    private boolean common;
 
     @Tolerate
     public Address() {
     }
 
-    public boolean isValid() {
-        if (Service.containNull(common)
-                || Service.containEmptyOrLimit(50, name)) {
-            return false;
-        }
-
-        if (Service.containAlongEmptyOrLimit(50
-                , zipCode, country, region, district, city, street, house, office)) {
-            return false;
-        }
-
-        if (name.equals("") || name.length() > 50) {
-            return false;
-        }
-        if (zipCode != null && (zipCode.equals("") || zipCode.length() > 50)) {
-            return false;
-        }
-        return true;
-    }
-
-
     public void normalise() throws IllegalArgumentException {
-        name = Service.safeTrim(name);
-        zipCode = Service.safeTrim(zipCode);
-        country = Service.safeTrim(country);
-        region = Service.safeTrim(region);
-        district = Service.safeTrim(district);
-        city = Service.safeTrim(city);
-        street = Service.safeTrim(street);
-        house = Service.safeTrim(house);
-        office = Service.safeTrim(office);
-        common = Service.defaultTrue(common);
+        name = Service.safeTrimEmptyToNull(name);
+        zipCode = Service.safeTrimEmptyToNull(zipCode);
+        country = Service.safeTrimEmptyToNull(country);
+        region = Service.safeTrimEmptyToNull(region);
+        district = Service.safeTrimEmptyToNull(district);
+        city = Service.safeTrimEmptyToNull(city);
+        street = Service.safeTrimEmptyToNull(street);
+        house = Service.safeTrimEmptyToNull(house);
+        office = Service.safeTrimEmptyToNull(office);
 
-        if (!isValid()) {
-            throw new IllegalArgumentException("Invalid address parameters");
+        if (Service.nullOrLimit(1, 50, name)
+                || Service.allClearOrLimit(1, 50
+                , zipCode, country, region, district, city, street, house, office)) {
+            throw new IllegalArgumentException("Invalid Address parameters");
         }
     }
 

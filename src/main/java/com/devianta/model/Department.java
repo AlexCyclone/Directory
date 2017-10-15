@@ -63,38 +63,20 @@ public class Department implements Serializable {
 
     @JsonView(View.COMMON_REST.class)
     public boolean hasChild() {
-        if (childDepartments == null || childDepartments.size() > 0) {
-            return true;
-        }
-        return false;
+        return childDepartments != null && childDepartments.size() > 0;
     }
 
     @JsonView(View.COMMON_REST.class)
     public boolean hasPositions() {
-        if (positions == null || positions.size() > 0) {
-            return true;
-        }
-        return false;
-    }
-
-    public boolean isValid() {
-        if (Service.containEmptyOrLimit(500, name)) {
-            return false;
-        }
-        return true;
+        return positions != null && positions.size() > 0;
     }
 
     public Department normalise() throws IllegalArgumentException {
-        name = Service.safeTrim(name);
+        name = Service.safeTrimEmptyToNull(name);
         normaliseContact();
-
-        if (!isValid()) {
-            throw new IllegalArgumentException("Invalid department name");
+        if (Service.nullOrLimit(1, 500, name)) {
+            throw new IllegalArgumentException("Invalid Department parameters");
         }
-        return this;
-    }
-
-    public Department normalisePositions() throws IllegalArgumentException {
         return this;
     }
 

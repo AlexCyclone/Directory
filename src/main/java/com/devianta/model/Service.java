@@ -1,22 +1,26 @@
 package com.devianta.model;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public interface Service {
-    static String safeTrim(String str) {
+    static String safeTrimEmptyToNull(String str) {
         if (str == null) {
-            return str;
+            return null;
+        }
+        str = str.trim();
+        return str.length() == 0 ? null : str;
+    }
+
+    static String safeTrimNullToEmpty(String str) {
+        if (str == null) {
+            return "";
         }
         return str.trim();
     }
 
-    static Boolean defaultTrue(Boolean b) {
-        if (b == null) {
-            return true;
-        }
-        return false;
-    }
-
     static boolean containNull(Object... obj) {
-        for(Object o : obj) {
+        for (Object o : obj) {
             if (o == null) {
                 return true;
             }
@@ -24,29 +28,32 @@ public interface Service {
         return false;
     }
 
-    static boolean containEmptyOrLimit(int limit, String... str) {
+    static boolean nullOrLimit(int lowerLimit, int upperLimit, String... str) {
         for (String s : str) {
-            if (s == null || s.equals("") || s.length() > limit) {
+            if (s == null || s.length() < lowerLimit || s.length() > upperLimit) {
                 return true;
             }
         }
         return false;
     }
 
-    static boolean containAlongEmptyOrLimit(int limit, String... str) {
-        int fillCounter = 0;
+    static boolean allClearOrLimit(int lowerLimit, int upperLimit, String... str) {
+        int summaryLength = 0;
         for (String s : str) {
-            if (s == null || s.equals("")) {
+            if (s == null) {
                 continue;
             }
-            if (s.length() > limit) {
+            if (s.length() < lowerLimit || s.length() > upperLimit) {
                 return true;
             }
-            fillCounter++;
+            summaryLength += s.length();
         }
-        if (fillCounter == 0) {
-            return true;
-        }
-        return false;
+        return summaryLength == 0;
+    }
+
+    static boolean patternMatch(String str, String pattern) {
+        Pattern p = Pattern.compile(pattern);
+        Matcher m = p.matcher(str);
+        return m.matches();
     }
 }

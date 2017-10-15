@@ -43,29 +43,16 @@ public class Phone {
     @NonNull
     @Column(nullable = false)
     @JsonView(View.COMMON_REST.class)
-    private Boolean common;
-
-    public boolean isValid() {
-        if (Service.containNull(common, number)
-                || Service.containEmptyOrLimit(50, name)) {
-            return false;
-        }
-
-        Pattern pattern = Pattern.compile("\\+*\\d+");
-        Matcher matcher = pattern.matcher(number);
-        if (!matcher.matches() || number.length() > 15) {
-            return false;
-        }
-        return true;
-    }
+    private boolean common;
 
     public void normalise() throws IllegalArgumentException {
-        name = Service.safeTrim(name);
-        number = Service.safeTrim(number);
-        common = Service.defaultTrue(common);
+        name = Service.safeTrimEmptyToNull(name);
+        number = Service.safeTrimEmptyToNull(number);
 
-        if (!isValid()) {
-            throw new IllegalArgumentException("Invalid phone parameters");
+        if (Service.nullOrLimit(1, 50, name)
+                || Service.nullOrLimit(1, 15, number)
+                || !Service.patternMatch(number, "\\+?\\d+")) {
+            throw new IllegalArgumentException("Invalid Phone parameters");
         }
     }
 }

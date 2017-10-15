@@ -67,18 +67,25 @@ public class CommonRest {
     @RequestMapping(value = "/child/{parentId}", method = PUT)
     @ResponseBody
     @JsonView(View.COMMON_REST.class)
-    public List<Department> putChildDepartments(@PathVariable Long parentId, @RequestBody Department childDepartment) {
+    public List<Department> putChildDepartment(@PathVariable Long parentId, @RequestBody Department childDepartment) {
         departmentService.saveChildDepartment(parentId, childDepartment);
         return departmentService.findChildDepartment(parentId);
     }
 
     // Positions
 
-    @RequestMapping(value = "/positions/{id}", method = GET)
+    @RequestMapping(value = "/positions/{departmentId}", method = GET)
     @ResponseBody
     @JsonView(View.COMMON_REST.class)
-    public List<Position> getPosition(@PathVariable Long id) {
-        return departmentService.findPositionInDepartment(id);
+    public List<Position> getDepartmentPositions(@PathVariable Long departmentId) {
+        return departmentService.findPositions(departmentId);
     }
 
+    @RequestMapping(value = "/positions/{departmentId}", method = PUT)
+    @ResponseBody
+    @JsonView(View.COMMON_REST.class)
+    public List<Position> putDepartmentPositions(@PathVariable Long departmentId, @RequestBody Position position) {
+        departmentService.savePosition(departmentId, position);
+        return departmentService.findPositions(departmentId);
+    }
 }

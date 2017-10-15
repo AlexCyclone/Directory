@@ -1,6 +1,7 @@
-Directory API (ver 1.0.3):
-Fixed:
-- contact modify trouble
+Directory API (ver 1.0.4):
+New:
+- Position added
+- Person added
 
 auth: none
 
@@ -19,7 +20,7 @@ Minimum filling of the object (api response):
     "contact": null,       - nullable
     "hasPositions": false, - property (will be ignore in put request)
     "hasChild": true,      - property (will be ignore in put request)
-    "parentId": 1          - can be null in root department
+    "parentId": 1          - can be null in root department (will be ignore in put request)
 }
 
 Maximum filling of the object:
@@ -133,6 +134,37 @@ Maximum filling of the object:
     ]
 }
 -----------------------------------------------------------------------------
+Position object format detail:
+
+Minimum filling of the object:
+{
+    "id": 7,                            - id (will be ignore in put request)
+    "namePosition": "Position Name",    - not null (duplicate support)
+    "person": null,                     - nullable
+    "departmentId": 5                   - not null (will be ignore in put request)
+}
+
+Maximum filling of the object:
+{
+    "id": 7,
+    "namePosition": "Position Name",
+    "person": {
+        "id": 7,
+        "surname": "Surname",
+        "name": "Name",
+        "patronymic": "Patronymic"
+    },
+    "departmentId": 5
+}
+-----------------------------------------------------------------------------
+Person object format detail:
+{
+    "id": 7,
+    "surname": "Surname",        - nullable | Can't be
+    "name": "Name",              - nullable | clear
+    "patronymic": null           - nullable | together
+}
+-----------------------------------------------------------------------------
 (GET) http://localhost:8060/restapi/department
 Возвращает обьект JSON соответствующий корневому департаменту
 В случает отсутствия обьекта возвращает null
@@ -155,4 +187,11 @@ Maximum filling of the object:
 (PUT) http://localhost:8060/restapi/department/child/{id}
 Добавляет новый дочерний обьект Department подчиненных обьекту с указанным id
 Дубликаты обьетов внутри родительского обьекта контролируются, в случае обнаружения дубликата возвращается ошибка.
+----------
+(GET) http://localhost:8060/restapi/department/positions/{id}
+Возвращает массив обьектов Position подчиненных обьекту Department с указанным id
+
+(PUT) http://localhost:8060/restapi/department/positions/{id}
+Добавляет новый обьект Position подчиненный обьекту Department с указанным id
+Дубликаты должностей поддерживаются.
 ----------

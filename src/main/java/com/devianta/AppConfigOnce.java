@@ -1,6 +1,8 @@
 package com.devianta;
 
 import com.devianta.model.Department;
+import com.devianta.model.Person;
+import com.devianta.model.Position;
 import com.devianta.model.contact.*;
 import com.devianta.servise.DepartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,7 +78,7 @@ public class AppConfigOnce {
                                 .common(true)
                                 .build())
                         .email(Email.getNew("  E-mail  ", " fssu@fssu.gov.ua ", true))
-                        .phone(Phone.getNew(" гаряча лінія ", " 0800501892 ", true))
+                        .phone(Phone.getNew(" гаряча лінія ", " +0800501892 ", true))
                         .phone(Phone.getNew(" тел./факс ", "  0442060401 ", true))
                         .other(OtherInfo.getNew(" www ", "  http://www.fssu.gov.ua  ", true))
                         .build())
@@ -147,5 +149,26 @@ public class AppConfigOnce {
                         .build())
                 .build();
         departmentService.saveChildDepartment(dept2.getId(), dept23);
+
+        departmentService.savePosition(vd.getId(), Position.builder()
+                .namePosition(" Директор  ")
+                .person(Person.getNew(" Баженков  ", " Євген ", "  Володимирович "))
+                .build());
+        departmentService.savePosition(vd.getId(), Position.builder()
+                .namePosition("Заступник директора")
+                .person(Person.getNew("Блажинська", "Тетяна", "Олександрівна"))
+                .build());
+        departmentService.savePosition(vd.getId(), Position.builder()
+                .namePosition("Заступник директора")
+                .person(Person.getNew("Забела", "Володимир", "Юрійович"))
+                .build());
+        departmentService.savePosition(vd.getId(), Position.builder()
+                .namePosition("Заступник директора")
+                .person(Person.getNew("Лапчик", "Світлана", "Дмитрівна"))
+                .build());
+        departmentService.savePosition(vd.getId(), Position.builder()
+                .namePosition("Радник директора")
+                .person(Person.getNew("Беліневич", "Павло", "Вадимович"))
+                .build());
     }
 }

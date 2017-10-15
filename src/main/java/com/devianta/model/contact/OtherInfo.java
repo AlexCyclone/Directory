@@ -40,24 +40,15 @@ public class OtherInfo {
     @NonNull
     @Column(nullable = false)
     @JsonView(View.COMMON_REST.class)
-    private Boolean common;
-
-    public boolean isValid() {
-        if (Service.containNull(common)
-                || Service.containEmptyOrLimit(50, name)
-                || Service.containEmptyOrLimit(255, value)) {
-            return false;
-        }
-        return true;
-    }
+    private boolean common;
 
     public void normalise() throws IllegalArgumentException {
-        name = Service.safeTrim(name);
-        value = Service.safeTrim(value);
-        common = Service.defaultTrue(common);
+        name = Service.safeTrimEmptyToNull(name);
+        value = Service.safeTrimEmptyToNull(value);
 
-        if (!isValid()) {
-            throw new IllegalArgumentException("Invalid other info parameters");
+        if (Service.nullOrLimit(1, 50, name)
+                || Service.nullOrLimit(1, 255, value)) {
+            throw new IllegalArgumentException("Invalid OtherInfo parameters");
         }
     }
 }
