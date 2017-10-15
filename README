@@ -14,11 +14,12 @@ Department object format detail:
 
 Minimum filling of the object (api response):
 {
-    "id": 1,               - id (will be ignore in put request)
+    "id": 5,               - id (will be ignore in put request)
     "name": "c",           - null and "" not support (further for String object - not null)
     "contact": null,       - nullable
     "hasPositions": false, - property (will be ignore in put request)
-    "hasChild": true       - property (will be ignore in put request)
+    "hasChild": true,      - property (will be ignore in put request)
+    "parentId": 1          - can be null in root department
 }
 
 Maximum filling of the object:
@@ -68,7 +69,8 @@ Maximum filling of the object:
         ]
     },
     "hasPositions": false,
-    "hasChild": true
+    "hasChild": true,
+    "parentId": null
 }
 
 Expected object in PUT request (other fields will be ignored):
@@ -146,11 +148,11 @@ Maximum filling of the object:
 Изменяет обьект Department с соответствующим id (обьект с указанным id должен быть создан)
 Дубликаты обьетов внутри родительского обьекта контролируются, в случае обнаружения дубликата возвращается ошибка.
 ----------
-(GET) http://localhost:8060/restapi/department/{id}/child
+(GET) http://localhost:8060/restapi/department/child/{id}
 Возвращает массив дочерних обьектов Department подчиненных обьекту с указанным id
 В случает отсутствия обьектов возвращает []
 
-(PUT) http://localhost:8060/restapi/department/{id}/child
+(PUT) http://localhost:8060/restapi/department/child/{id}
 Добавляет новый дочерний обьект Department подчиненных обьекту с указанным id
 Дубликаты обьетов внутри родительского обьекта контролируются, в случае обнаружения дубликата возвращается ошибка.
 ----------

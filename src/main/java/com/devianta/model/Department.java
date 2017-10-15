@@ -42,7 +42,7 @@ public class Department implements Serializable {
     private List<Department> childDepartments;
 
     @Singular
-    @OneToMany(mappedBy = "department", fetch = FetchType.LAZY, cascade = {DETACH, MERGE, PERSIST, REFRESH})
+    @OneToMany(mappedBy = "department", fetch = FetchType.LAZY)
     private List<Position> positions;
 
     @OneToOne(mappedBy = "department", fetch = FetchType.EAGER, cascade = ALL)
@@ -54,6 +54,11 @@ public class Department implements Serializable {
     public Department() {
         childDepartments = new ArrayList<>();
         positions = new ArrayList<>();
+    }
+
+    @JsonView(View.COMMON_REST.class)
+    public Long parentId() {
+        return parentDepartment != null ? parentDepartment.getId() : null;
     }
 
     @JsonView(View.COMMON_REST.class)
@@ -73,7 +78,6 @@ public class Department implements Serializable {
     }
 
     public boolean isValid() {
-
         if (Service.containEmptyOrLimit(500, name)) {
             return false;
         }

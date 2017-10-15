@@ -18,15 +18,14 @@ public class Position {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
+    private Department department;
+
     @NonNull
     @Column(nullable = false)
     @JsonView(View.COMMON_REST.class)
     private String namePosition;
-
-    @NonNull
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false)
-    private Department department;
 
     @OneToOne(mappedBy = "position", fetch = FetchType.LAZY, cascade = ALL)
     @JsonView(View.COMMON_REST.class)
