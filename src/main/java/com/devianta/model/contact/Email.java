@@ -3,6 +3,7 @@ package com.devianta.model.contact;
 import com.devianta.model.Service;
 import com.devianta.model.View;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.*;
 
@@ -18,6 +19,7 @@ import static javax.persistence.FetchType.LAZY;
 @Setter
 @EqualsAndHashCode(doNotUseGetters = true, exclude = {"id", "contact", "name", "common"})
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Email {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

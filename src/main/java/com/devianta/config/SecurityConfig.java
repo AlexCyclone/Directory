@@ -1,4 +1,4 @@
-package com.devianta;
+package com.devianta.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -27,8 +27,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .authorizeRequests()
                 .anyRequest().permitAll();
-                //.antMatchers("/restapi/department/**").hasAnyRole("USER", "ADMIN")
-                //.and().httpBasic();
+        //.antMatchers("/restapi/department/**").hasAnyRole("USER", "ADMIN")
+        //.and().httpBasic();
     }
 
 }

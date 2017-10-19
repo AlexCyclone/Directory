@@ -2,6 +2,7 @@ package com.devianta.model;
 
 import com.devianta.model.contact.Contact;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.*;
 import lombok.experimental.Tolerate;
@@ -10,7 +11,6 @@ import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 import static javax.persistence.CascadeType.*;
@@ -23,6 +23,7 @@ import static javax.persistence.CascadeType.*;
 @Setter
 @EqualsAndHashCode(doNotUseGetters = true, exclude = {"id", "parentDepartment", "childDepartments", "positions", "contact"})
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Department implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -52,8 +53,6 @@ public class Department implements Serializable {
 
     @Tolerate
     public Department() {
-        childDepartments = new ArrayList<>();
-        positions = new ArrayList<>();
     }
 
     @JsonView(View.COMMON_REST.class)

@@ -4,6 +4,7 @@ import com.devianta.model.Department;
 import com.devianta.model.Person;
 import com.devianta.model.View;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.*;
 import lombok.experimental.Tolerate;
@@ -24,6 +25,7 @@ import static javax.persistence.FetchType.*;
 @Getter
 @Setter
 @JsonIgnoreProperties(ignoreUnknown=true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Contact {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -62,10 +64,6 @@ public class Contact {
 
     @Tolerate
     public Contact() {
-        addresses = new ArrayList<>();
-        emails = new ArrayList<>();
-        phones = new ArrayList<>();
-        others = new ArrayList<>();
     }
 
     public Contact normalise() throws IllegalArgumentException {

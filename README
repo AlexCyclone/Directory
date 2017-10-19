@@ -1,5 +1,8 @@
-Directory API (ver 1.0.4):
+Directory API (ver 1.0.5):
 New:
+- nullable properties not serialize
+- tests added
+-------
 - Position added
 - Person added
 

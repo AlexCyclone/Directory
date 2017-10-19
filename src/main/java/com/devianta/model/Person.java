@@ -2,6 +2,7 @@ package com.devianta.model;
 
 import com.devianta.model.contact.Contact;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.*;
 import org.hibernate.annotations.Fetch;
@@ -19,6 +20,7 @@ import static javax.persistence.FetchType.LAZY;
 @Setter
 @EqualsAndHashCode(doNotUseGetters = true, exclude = {"id", "contact", "position"})
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Person {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

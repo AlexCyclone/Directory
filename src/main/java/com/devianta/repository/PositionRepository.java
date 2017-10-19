@@ -16,5 +16,5 @@ public interface PositionRepository extends JpaRepository<Position, Long> {
     Position findById(@Param("id") long id);
 
     @Query("SELECT p FROM Position p WHERE p.department = :department")
-    List<Position> findByDepartment(@Param("department")Department department);
+    List<Position> findByDepartment(@Param("department") Department department);
 }

@@ -6,7 +6,7 @@
     <groupId>com.devianta</groupId>
     <artifactId>directory</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.4-SNAPSHOT</version>
+    <version>1.0.5-SNAPSHOT</version>
     <name>Directory</name>
 
     <parent>
@@ -23,6 +23,8 @@
         <hibernate-version>5.1.0.Final</hibernate-version>
         <jstl-version>1.2</jstl-version>
         <lombok-version>1.16.18</lombok-version>
+        <spring-boot-starter-test-version>1.5.7.RELEASE</spring-boot-starter-test-version>
+        <glassfish-javax-json-version>1.1</glassfish-javax-json-version>
     </properties>
 
     <dependencies>
@@ -76,6 +78,18 @@
             <version>${lombok-version}</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <version>${spring-boot-starter-test-version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>javax.json</artifactId>
+            <version>${glassfish-javax-json-version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -95,5 +109,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

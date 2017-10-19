@@ -1,5 +1,6 @@
 package com.devianta.servise;
 
+import com.devianta.exception.ObjectNotFoundException;
 import com.devianta.model.Department;
 import com.devianta.model.Person;
 import com.devianta.model.Position;
@@ -66,12 +67,12 @@ public class DepartmentService {
     // Root
 
     @Transactional(readOnly = true)
-    public Department findRoot() {
+    public Department findRoot() throws ObjectNotFoundException {
         List<Department> dept = departmentRepository.findRoot();
 
         // Return null if root not found
         if (dept.size() == 0) {
-            return null;
+            throw new ObjectNotFoundException("Root department not found");
         }
         return dept.get(0);
     }
@@ -86,11 +87,11 @@ public class DepartmentService {
         department.setPositions(new ArrayList<>());
 
         // If root found rewrite data
-        Department root = findRoot();
-        if (root != null) {
+        try {
+            Department root = findRoot();
             department.setId(root.getId());
+        } catch (ObjectNotFoundException e) {
         }
-
         saveDepartment(department.normalise());
     }
 

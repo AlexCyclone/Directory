@@ -1,6 +1,7 @@
 package com.devianta.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.*;
 import lombok.experimental.Tolerate;
@@ -17,6 +18,7 @@ import static javax.persistence.CascadeType.*;
 @Setter
 @EqualsAndHashCode(doNotUseGetters = true, exclude = {"id", "department", "person"})
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Position {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

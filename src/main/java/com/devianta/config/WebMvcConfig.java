@@ -1,4 +1,4 @@
-package com.devianta;
+package com.devianta.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

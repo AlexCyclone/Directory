@@ -1,5 +1,6 @@
-package com.devianta;
+package com.devianta.config;
 
+import com.devianta.exception.ObjectNotFoundException;
 import com.devianta.model.Department;
 import com.devianta.model.Person;
 import com.devianta.model.Position;
@@ -28,18 +29,20 @@ public class AppConfigOnce {
     private String[] childDeptNames;
 
     @Bean
-    public CommandLineRunner demo(final DepartmentService departmentService) {
-        return new CommandLineRunner() {
-            @Override
-            public void run(String... strings) throws Exception {
-                if (departmentService.findRoot() == null) {
-                    createDefaultHierarchy();
-                }
+    public CommandLineRunner init(final DepartmentService departmentService) {
+        return (s) -> {
+            try {
+                departmentService.findRoot();
+            } catch (ObjectNotFoundException e) {
+                createDefaultHierarchy();
             }
         };
     }
 
     private void createDefaultHierarchy() {
+        if (rootDeptName == null || rootDeptName.length() == 0) {
+            return;
+        }
         Department root = Department.builder().name(rootDeptName).build();
         departmentService.saveRootDepartment(root);
 
@@ -153,9 +156,9 @@ public class AppConfigOnce {
         departmentService.savePosition(vd.getId(), Position.builder()
                 .namePosition(" Директор  ")
                 .person(Person.getNew(" Баженков  ", " Євген ", "  Володимирович ")
-                .chainSetContact(Contact.builder()
-                        .phone(Phone.getNew("тел.", "000000", true))
-                        .build()))
+                        .chainSetContact(Contact.builder()
+                                .phone(Phone.getNew("тел.", "000000", true))
+                                .build()))
                 .build());
         departmentService.savePosition(vd.getId(), Position.builder()
                 .namePosition("Заступник директора")
