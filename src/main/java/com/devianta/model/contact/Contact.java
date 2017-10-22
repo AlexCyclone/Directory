@@ -29,7 +29,6 @@ import static javax.persistence.FetchType.*;
 public class Contact {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @JsonView(View.COMMON_REST.class)
     private long id;
 
     @OneToOne(fetch = LAZY)

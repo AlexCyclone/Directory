@@ -1,4 +1,6 @@
-Directory API (ver 1.0.5):
+Directory API (ver 1.0.6):
+New:
+- tests added
 New:
 - nullable properties not serialize
 - tests added
@@ -94,7 +96,6 @@ Contact object format detail:
 
 Minimum filling of the object:
 {
-    "id": 1,
     "addresses": [],  - Address object array
     "emails": [],     - Email object array
     "phones": [],     - Phone object array
@@ -103,7 +104,6 @@ Minimum filling of the object:
 
 Maximum filling of the object:
 {
-    "id": 1,
     "addresses": [
         {
             "name": "primary",          - not null

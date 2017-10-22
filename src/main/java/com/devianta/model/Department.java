@@ -83,4 +83,10 @@ public class Department implements Serializable {
         }
         return this;
     }
+
+    public void updateNullField(Department department) {
+        if (name == null) {
+            name = department.getName();
+        }
+    }
 }

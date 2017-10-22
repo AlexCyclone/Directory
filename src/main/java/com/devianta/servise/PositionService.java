@@ -23,4 +23,9 @@ public class PositionService {
     public void save(Position position) {
         positionRepository.save(position.normalise());
     }
+
+    @Transactional
+    public void delete(Position position) {
+        positionRepository.delete(position);
+    }
 }

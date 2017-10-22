@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
@@ -31,11 +32,9 @@ public class CommonRestController {
     }
 
     @RequestMapping(method = PUT)
-    @ResponseBody
     @JsonView(View.COMMON_REST.class)
-    public Department saveRootDepartment(@RequestBody Department department) {
+    public void saveRootDepartment(@RequestBody Department department) {
         departmentService.saveRootDepartment(department);
-        return getRootDepartment();
     }
 
     // Department

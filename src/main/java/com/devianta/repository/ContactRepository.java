@@ -8,11 +8,12 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface DepartmentContactRepository extends JpaRepository<Contact, Long> {
+public interface ContactRepository extends JpaRepository<Contact, Long> {
 
     @Query("SELECT c FROM Contact c WHERE c.id = :id")
     Contact findById(@Param("id") long id);
 
     @Query("SELECT c FROM Contact c WHERE c.department = :department")
     Contact findByDepartment(@Param("department") Department department);
+
 }

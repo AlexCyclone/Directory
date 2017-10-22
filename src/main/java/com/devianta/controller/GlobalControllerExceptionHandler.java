@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.servlet.http.HttpServletRequest;
 
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @ControllerAdvice
@@ -18,5 +19,12 @@ public class GlobalControllerExceptionHandler {
     @ResponseBody
     public ExceptionInfo handleObjectNotFound(HttpServletRequest request, Exception ex) {
         return ExceptionInfo.getNew(request, NOT_FOUND, ex);
+    }
+
+    @ResponseStatus(value = BAD_REQUEST)
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseBody
+    public ExceptionInfo handleIllegalArgumentException(HttpServletRequest request, Exception ex) {
+        return ExceptionInfo.getNew(request, BAD_REQUEST, ex);
     }
 }
