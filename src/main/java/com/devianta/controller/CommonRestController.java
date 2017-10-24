@@ -80,8 +80,7 @@ public class CommonRestController {
     @RequestMapping(value = "/{departmentId}/positions", method = POST)
     @ResponseBody
     @JsonView(View.COMMON_REST.class)
-    public List<Position> putDepartmentPositions(@PathVariable Long departmentId, @RequestBody Position position) {
+    public void putDepartmentPositions(@PathVariable Long departmentId, @RequestBody Position position) {
         departmentService.savePosition(departmentId, position);
-        return departmentService.findPositions(departmentId);
     }
 }

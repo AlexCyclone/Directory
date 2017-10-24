@@ -118,8 +118,8 @@ public class DepartmentService {
     @Transactional(readOnly = true)
     public List<Position> findPositions(Long departmentId) {
         Department dept = findById(departmentId);
-        if (dept == null) {
-            return new ArrayList<>();
+        if (!dept.hasPositions()) {
+            throw new ObjectNotFoundException("Positions not found");
         }
         return dept.getPositions();
     }

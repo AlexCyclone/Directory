@@ -33,7 +33,7 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.*;
 @SpringBootTest(classes = Application.class)
 @TestPropertySource(locations = "classpath:test.properties")
 @WebAppConfiguration
-public class CommonRestControllerTest {
+public class CommonRestControllerDepartmentTest {
 
     private MockMvc mockMvc;
 
@@ -44,7 +44,7 @@ public class CommonRestControllerTest {
     private DepartmentService departmentService;
 
     @Autowired
-    CommonRestController commonRestController;
+    private CommonRestController commonRestController;
 
     @Before
     public void setup() throws Exception {
@@ -498,6 +498,8 @@ public class CommonRestControllerTest {
                 .andExpect(jsonPath("$.path").value("/restapi/department/" + childTwo.getId()))
                 .andDo(print());
     }
+
+    // Child departments
 
     @Test
     public void postChildDepartmentTest() throws Exception {
