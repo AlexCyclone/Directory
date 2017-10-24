@@ -12,6 +12,7 @@ import java.util.List;
 
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
 @RestController
@@ -33,7 +34,7 @@ public class CommonRestController {
 
     @RequestMapping(method = PUT)
     @JsonView(View.COMMON_REST.class)
-    public void saveRootDepartment(@RequestBody Department department) {
+    public void putRootDepartment(@RequestBody Department department) {
         departmentService.saveRootDepartment(department);
     }
 
@@ -47,40 +48,36 @@ public class CommonRestController {
     }
 
     @RequestMapping(value = "/{id}", method = PUT)
-    @ResponseBody
     @JsonView(View.COMMON_REST.class)
-    public Department modifyDepartment(@PathVariable Long id, @RequestBody Department department) {
+    public void putDepartment(@PathVariable Long id, @RequestBody Department department) {
         departmentService.modifyDepartment(id, department);
-        return departmentService.findById(id);
     }
 
     // Child Departments
 
-    @RequestMapping(value = "/child/{parentId}", method = GET)
+    @RequestMapping(value = "/{parentId}/child", method = GET)
     @ResponseBody
     @JsonView(View.COMMON_REST.class)
     public List<Department> getChildDepartments(@PathVariable Long parentId) {
         return departmentService.findChildDepartment(parentId);
     }
 
-    @RequestMapping(value = "/child/{parentId}", method = PUT)
-    @ResponseBody
+    @RequestMapping(value = "/{parentId}/child", method = POST)
     @JsonView(View.COMMON_REST.class)
-    public List<Department> putChildDepartment(@PathVariable Long parentId, @RequestBody Department childDepartment) {
+    public void putChildDepartment(@PathVariable Long parentId, @RequestBody Department childDepartment) {
         departmentService.saveChildDepartment(parentId, childDepartment);
-        return departmentService.findChildDepartment(parentId);
     }
 
     // Positions
 
-    @RequestMapping(value = "/positions/{departmentId}", method = GET)
+    @RequestMapping(value = "/{departmentId}/positions", method = GET)
     @ResponseBody
     @JsonView(View.COMMON_REST.class)
     public List<Position> getDepartmentPositions(@PathVariable Long departmentId) {
         return departmentService.findPositions(departmentId);
     }
 
-    @RequestMapping(value = "/positions/{departmentId}", method = PUT)
+    @RequestMapping(value = "/{departmentId}/positions", method = POST)
     @ResponseBody
     @JsonView(View.COMMON_REST.class)
     public List<Position> putDepartmentPositions(@PathVariable Long departmentId, @RequestBody Position position) {

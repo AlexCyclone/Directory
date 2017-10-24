@@ -1,4 +1,4 @@
-Directory API (ver 1.0.6):
+Directory API (ver 1.0.7):
 New:
 - tests added
 New:
@@ -183,24 +183,24 @@ Person object format detail:
 ----------
 (GET) http://localhost:8060/restapi/department/{id}
 Возвращает обьект Department с соответствующим id
-В случает отсутствия обьекта возвращает null
+В случает отсутствия обьекта возвращает 404
 
 (PUT) http://localhost:8060/restapi/department/{id}
 Изменяет обьект Department с соответствующим id (обьект с указанным id должен быть создан)
-Дубликаты обьетов внутри родительского обьекта контролируются, в случае обнаружения дубликата возвращается ошибка.
+Дубликаты обьетов внутри родительского обьекта контролируются, в случае обнаружения дубликата возвращается 400.
 ----------
-(GET) http://localhost:8060/restapi/department/child/{id}
+(GET) http://localhost:8060/restapi/department/{id}/child
 Возвращает массив дочерних обьектов Department подчиненных обьекту с указанным id
-В случает отсутствия обьектов возвращает []
+В случает отсутствия обьектов возвращает 404
 
-(PUT) http://localhost:8060/restapi/department/child/{id}
-Добавляет новый дочерний обьект Department подчиненных обьекту с указанным id
-Дубликаты обьетов внутри родительского обьекта контролируются, в случае обнаружения дубликата возвращается ошибка.
+(POST) http://localhost:8060/restapi/department/{id}/child
+Добавляет новый дочерний обьект Department подчиненный обьекту с указанным id
+Дубликаты обьетов внутри родительского обьекта контролируются, в случае обнаружения дубликата возвращается 400.
 ----------
-(GET) http://localhost:8060/restapi/department/positions/{id}
+(GET) http://localhost:8060/restapi/department/{id}/positions
 Возвращает массив обьектов Position подчиненных обьекту Department с указанным id
 
-(PUT) http://localhost:8060/restapi/department/positions/{id}
+(POST) http://localhost:8060/restapi/department/{id}/positions
 Добавляет новый обьект Position подчиненный обьекту Department с указанным id
 Дубликаты должностей поддерживаются.
 ----------

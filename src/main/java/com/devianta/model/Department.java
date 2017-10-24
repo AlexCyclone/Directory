@@ -89,4 +89,11 @@ public class Department implements Serializable {
             name = department.getName();
         }
     }
+
+    public void resetProtectedFields() {
+        id = 0;
+        childDepartments = null;
+        positions = null;
+        parentDepartment = null;
+    }
 }

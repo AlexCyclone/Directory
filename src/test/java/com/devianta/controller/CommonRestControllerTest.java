@@ -114,7 +114,7 @@ public class CommonRestControllerTest {
     public void putMinimalFilledRootDepartmentTest() throws Exception {
         mockMvc.perform(put("/restapi/department")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(minimalFilledDepartmentTestObject().toString()))
+                .content(minimalFilledDepartmentObject().toString()))
                 .andExpect(status().isOk())
                 .andDo(print());
         mockMvc.perform(get("/restapi/department"))
@@ -124,7 +124,7 @@ public class CommonRestControllerTest {
                 .andDo(print());
     }
 
-    private JsonObject minimalFilledDepartmentTestObject() {
+    private JsonObject minimalFilledDepartmentObject() {
         JsonBuilderFactory factory = Json.createBuilderFactory(null);
         return factory.createObjectBuilder()
                 .add("name", "testDept")
@@ -138,7 +138,7 @@ public class CommonRestControllerTest {
 
         mockMvc.perform(put("/restapi/department")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(minimalFilledDepartmentTestObject().toString()))
+                .content(minimalFilledDepartmentObject().toString()))
                 .andExpect(status().isOk())
                 .andDo(print());
         mockMvc.perform(get("/restapi/department"))
@@ -256,7 +256,7 @@ public class CommonRestControllerTest {
 
         mockMvc.perform(put("/restapi/department")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(minimalFilledDepartmentTestObject().toString()))
+                .content(minimalFilledDepartmentObject().toString()))
                 .andExpect(status().isOk())
                 .andDo(print());
         mockMvc.perform(get("/restapi/department"))
@@ -381,7 +381,7 @@ public class CommonRestControllerTest {
 
         mockMvc.perform(put("/restapi/department/" + child.getId())
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(minimalFilledDepartmentTestObject().toString()))
+                .content(minimalFilledDepartmentObject().toString()))
                 .andExpect(status().isOk())
                 .andDo(print());
         mockMvc.perform(get("/restapi/department/" + child.getId()))
@@ -421,22 +421,22 @@ public class CommonRestControllerTest {
     }
 
     @Test
-    @Ignore("Not implemented")
     public void putIgnoreContactRewriteDepartmentTest() throws Exception {
-        Department root = Department.builder()
-                .name("root")
+        Department root = Department.builder().name("root").build();
+        Department child = Department.builder().name("child")
                 .contact(Contact.builder()
                         .phone(Phone.getNew("number", "1111", true))
                         .build())
                 .build();
         departmentService.saveRootDepartment(root);
+        departmentService.saveChildDepartment(root.getId(), child);
 
-        mockMvc.perform(put("/restapi/department")
+        mockMvc.perform(put("/restapi/department/" + child.getId())
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(minimalFilledDepartmentTestObject().toString()))
+                .content(minimalFilledDepartmentObject().toString()))
                 .andExpect(status().isOk())
                 .andDo(print());
-        mockMvc.perform(get("/restapi/department"))
+        mockMvc.perform(get("/restapi/department/" + child.getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$.name").value("testDept"))
@@ -446,25 +446,25 @@ public class CommonRestControllerTest {
     }
 
     @Test
-    @Ignore("Not implemented")
     public void putRewriteContactIgnoreDepartmentTest() throws Exception {
-        Department root = Department.builder()
-                .name("root")
+        Department root = Department.builder().name("root").build();
+        Department child = Department.builder().name("child")
                 .contact(Contact.builder()
                         .phone(Phone.getNew("number", "1111", true))
                         .build())
                 .build();
         departmentService.saveRootDepartment(root);
+        departmentService.saveChildDepartment(root.getId(), child);
 
-        mockMvc.perform(put("/restapi/department")
+        mockMvc.perform(put("/restapi/department/" + child.getId())
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(rewriteContactIgnoreDepartmentObject().toString()))
                 .andExpect(status().isOk())
                 .andDo(print());
-        mockMvc.perform(get("/restapi/department"))
+        mockMvc.perform(get("/restapi/department/" + child.getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
-                .andExpect(jsonPath("$.name").value("root"))
+                .andExpect(jsonPath("$.name").value("child"))
                 .andExpect(jsonPath("$.contact.emails[0].name").value("namedata"))
                 .andExpect(jsonPath("$.contact.emails[0].email").value("q@q"))
                 .andExpect(jsonPath("$.contact.emails[0].common").value(true))
@@ -477,8 +477,86 @@ public class CommonRestControllerTest {
     }
 
     @Test
-    @Ignore("Not implemented")
     public void putDuplicateNameDepartmentTest() throws Exception {
+        Department root = Department.builder().name("root").build();
+        Department childOne = Department.builder().name("testDept").build();
+        Department childTwo = Department.builder().name("childTwo").build();
 
+        departmentService.saveRootDepartment(root);
+        departmentService.saveChildDepartment(root.getId(), childOne);
+        departmentService.saveChildDepartment(root.getId(), childTwo);
+
+        mockMvc.perform(put("/restapi/department/" + childTwo.getId())
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(minimalFilledDepartmentObject().toString()))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$.timestamp").isNumber())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.error").value("Bad Request"))
+                .andExpect(jsonPath("$.message").value("Duplicate department name"))
+                .andExpect(jsonPath("$.path").value("/restapi/department/" + childTwo.getId()))
+                .andDo(print());
+    }
+
+    @Test
+    public void postChildDepartmentTest() throws Exception {
+        Department root = Department.builder().name("root").build();
+        departmentService.saveRootDepartment(root);
+
+        mockMvc.perform(post("/restapi/department/" + root.getId() + "/child")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(minimalFilledDepartmentObject().toString()))
+                .andExpect(status().isOk())
+                .andDo(print());
+
+        mockMvc.perform(get("/restapi/department/" + root.getId()))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$.hasChild").value(true))
+                .andDo(print());
+
+        mockMvc.perform(get("/restapi/department/" + root.getId() + "/child"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$[0].name").value("testDept"))
+                .andDo(print());
+    }
+
+    @Test
+    public void postDuplicateChildDepartmentTest() throws Exception {
+        Department root = Department.builder().name("root").build();
+        Department child = Department.builder().name("testDept").build();
+        departmentService.saveRootDepartment(root);
+        departmentService.saveChildDepartment(root.getId(), child);
+
+        mockMvc.perform(post("/restapi/department/" + root.getId() + "/child")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(minimalFilledDepartmentObject().toString()))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$.timestamp").isNumber())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.error").value("Bad Request"))
+                .andExpect(jsonPath("$.message").value("Duplicate department name"))
+                .andExpect(jsonPath("$.path").value("/restapi/department/" + root.getId() + "/child"))
+                .andDo(print());
+    }
+
+    @Test
+    public void getNoChildDepartmentTest() throws Exception {
+        Department root = Department.builder().name("root").build();
+        departmentService.saveRootDepartment(root);
+
+        mockMvc.perform(get("/restapi/department/" + root.getId() + "/child"))
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$.timestamp").isNumber())
+                .andExpect(jsonPath("$.status").value(404))
+                .andExpect(jsonPath("$.error").value("Not Found"))
+                .andExpect(jsonPath("$.message").value("Child departments not found"))
+                .andExpect(jsonPath("$.path").value("/restapi/department/" + root.getId() + "/child"))
+                .andDo(print());
     }
 }

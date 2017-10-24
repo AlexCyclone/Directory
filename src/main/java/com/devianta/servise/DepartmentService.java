@@ -44,7 +44,7 @@ public class DepartmentService {
             int eqPosition = child.indexOf(department);
             if (eqPosition != -1) {
                 if (eqPosition != child.lastIndexOf(department) || child.get(eqPosition).getId() != department.getId()) {
-                    throw new IllegalArgumentException("Duplicate department found");
+                    throw new IllegalArgumentException("Duplicate department name");
                 }
             }
         }
@@ -71,14 +71,7 @@ public class DepartmentService {
 
     @Transactional
     public void saveRootDepartment(Department department) {
-
-        // Rewrite protect
-        department.setId(0);
-        department.setChildDepartments(null);
-        department.setPositions(null);
-        department.setParentDepartment(null);
-
-        // If root found rewrite data
+        department.resetProtectedFields();
         try {
             Department root = findRoot();
             department.setId(root.getId());
@@ -92,14 +85,9 @@ public class DepartmentService {
 
     @Transactional
     public void modifyDepartment(Long id, Department department) {
-        // Check and set id
+        department.resetProtectedFields();
         Department departmentFromBase = findById(id);
-
-        // Write protect
-        department.setChildDepartments(null);
-        department.setPositions(null);
         department.setParentDepartment(departmentFromBase.getParentDepartment());
-
         // Set id
         department.setId(departmentFromBase.getId());
         department.updateNullField(departmentFromBase);
@@ -111,21 +99,18 @@ public class DepartmentService {
     @Transactional(readOnly = true)
     public List<Department> findChildDepartment(Long parentId) {
         Department dept = findById(parentId);
+        if (!dept.hasChild()) {
+            throw new ObjectNotFoundException("Child departments not found");
+        }
         return dept.getChildDepartments();
     }
 
     @Transactional
     public void saveChildDepartment(Long parentId, Department department) {
+        department.resetProtectedFields();
         Department parent = findById(parentId);
-        // If parent not found throw Exception
-        if (parent == null) {
-            throw new IllegalArgumentException("Invalid department id");
-        }
-
-        // Reset id, set parent, normalise contact
-        department.setId(0);
         department.setParentDepartment(parent);
-        saveDepartment(department.normalise());
+        saveDepartment(department);
     }
 
     // Positions
@@ -142,9 +127,6 @@ public class DepartmentService {
     @Transactional
     public void savePosition(Long departmentId, Position position) {
         Department dept = findById(departmentId);
-        if (dept == null) {
-            throw new IllegalArgumentException("Department id not found");
-        }
 
         position.setId(0);
         position.setDepartment(dept);
