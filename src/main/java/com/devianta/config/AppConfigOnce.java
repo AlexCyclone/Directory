@@ -154,14 +154,14 @@ public class AppConfigOnce {
         departmentService.saveChildDepartment(dept2.getId(), dept23);
 
         departmentService.savePosition(vd.getId(), Position.builder()
-                .namePosition(" Директор  ")
+                .name(" Директор  ")
                 .person(Person.getNew(" Баженков  ", " Євген ", "  Володимирович ")
                         .chainSetContact(Contact.builder()
                                 .phone(Phone.getNew("тел.", "000000", true))
                                 .build()))
                 .build());
         departmentService.savePosition(vd.getId(), Position.builder()
-                .namePosition("Заступник директора")
+                .name("Заступник директора")
                 .person(Person.getNew("Блажинська", "Тетяна", "Олександрівна")
                         .chainSetContact(Contact.builder()
                                 .phone(Phone.getNew("тел.", "000000", true))
@@ -169,18 +169,18 @@ public class AppConfigOnce {
                                 .build()))
                 .build());
         departmentService.savePosition(vd.getId(), Position.builder()
-                .namePosition("Заступник директора")
+                .name("Заступник директора")
                 .person(Person.getNew("Забела", "Володимир", "Юрійович")
                         .chainSetContact(Contact.builder()
                                 .phone(Phone.getNew("тел.", "000000", true))
                                 .build()))
                 .build());
         departmentService.savePosition(vd.getId(), Position.builder()
-                .namePosition("Заступник директора")
+                .name("Заступник директора")
                 .person(Person.getNew("Лапчик", "Світлана", "Дмитрівна"))
                 .build());
         departmentService.savePosition(vd.getId(), Position.builder()
-                .namePosition("Радник директора")
+                .name("Радник директора")
                 .person(Person.getNew("Беліневич", "Павло", "Вадимович"))
                 .build());
     }

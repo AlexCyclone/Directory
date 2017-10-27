@@ -56,8 +56,14 @@ public class Department implements Serializable {
     }
 
     @JsonView(View.COMMON_REST.class)
-    public Long parentId() {
+    public Long getParentId() {
         return parentDepartment != null ? parentDepartment.getId() : null;
+    }
+
+    public void setParentId(long parentId) {
+        if(parentId > 0) {
+            parentDepartment = Department.builder().id(parentId).build();
+        }
     }
 
     @JsonView(View.COMMON_REST.class)
@@ -80,6 +86,10 @@ public class Department implements Serializable {
 
         if (Service.nullOrLimit(1, 500, name)) {
             throw new IllegalArgumentException("Invalid Department parameters");
+        }
+
+        if (parentDepartment != null && parentDepartment.getId() == id) {
+            throw new IllegalArgumentException("Invalid parent department");
         }
         return this;
     }

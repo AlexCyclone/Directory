@@ -32,9 +32,9 @@ public class Position {
     @NonNull
     @Column(nullable = false, length = 500)
     @JsonView(View.COMMON_REST.class)
-    private String namePosition;
+    private String name;
 
-    @OneToOne(mappedBy = "position", fetch = FetchType.EAGER, cascade = {MERGE, DETACH, PERSIST, REFRESH})
+    @OneToOne(mappedBy = "position", fetch = FetchType.EAGER, cascade = ALL)
     @JsonView(View.COMMON_REST.class)
     private Person person;
 
@@ -48,16 +48,20 @@ public class Position {
     }
 
     public Position normalise() {
-        namePosition = Service.safeTrimEmptyToNull(namePosition);
+        name = Service.safeTrimEmptyToNull(name);
         if (person != null) {
             person.setPosition(this);
             person.normalise();
         }
 
         if (department == null
-                || Service.nullOrLimit(1, 500, namePosition)) {
+                || Service.nullOrLimit(1, 500, name)) {
             throw new IllegalArgumentException("Invalid Position parameters");
         }
         return this;
+    }
+
+    public void resetProtectedFields() {
+        id = 0;
     }
 }

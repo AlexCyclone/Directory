@@ -85,9 +85,21 @@ public class DepartmentService {
 
     @Transactional
     public void modifyDepartment(Long id, Department department) {
+        if (id == findRoot().getId()) {
+            saveRootDepartment(department);
+            return;
+        }
+        Department parent = null;
+        if (department.getParentDepartment() != null) {
+            try {
+                parent = findById(department.getParentDepartment().getId());
+            } catch (ObjectNotFoundException e) {
+                throw new IllegalArgumentException("Invalid parent department");
+            }
+        }
         department.resetProtectedFields();
         Department departmentFromBase = findById(id);
-        department.setParentDepartment(departmentFromBase.getParentDepartment());
+        department.setParentDepartment(parent != null ? parent : departmentFromBase.getParentDepartment());
         // Set id
         department.setId(departmentFromBase.getId());
         department.updateNullField(departmentFromBase);
@@ -128,7 +140,7 @@ public class DepartmentService {
     public void savePosition(Long departmentId, Position position) {
         Department dept = findById(departmentId);
 
-        position.setId(0);
+        position.resetProtectedFields();
         position.setDepartment(dept);
         Person person = position.getPerson();
         if (person != null) {
@@ -138,6 +150,7 @@ public class DepartmentService {
     }
 
     // Clear database
+
     @Transactional
     public void clearDatabase() {
         Department root = null;

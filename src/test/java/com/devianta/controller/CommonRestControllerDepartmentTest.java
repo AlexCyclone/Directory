@@ -43,9 +43,6 @@ public class CommonRestControllerDepartmentTest {
     @Autowired
     private DepartmentService departmentService;
 
-    @Autowired
-    private CommonRestController commonRestController;
-
     @Before
     public void setup() throws Exception {
         this.mockMvc = webAppContextSetup(webApplicationContext).build();
@@ -153,7 +150,7 @@ public class CommonRestControllerDepartmentTest {
     public void putIgnoredFieldsRootDepartmentTest() throws Exception {
         mockMvc.perform(put("/restapi/department")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(ignoredFieldsDepartmentObject().toString()))
+                .content(ignoredFieldsRootDepartmentObject().toString()))
                 .andExpect(status().isOk())
                 .andDo(print());
         mockMvc.perform(get("/restapi/department"))
@@ -171,7 +168,7 @@ public class CommonRestControllerDepartmentTest {
                 .andDo(print());
     }
 
-    private JsonObject ignoredFieldsDepartmentObject() {
+    private JsonObject ignoredFieldsRootDepartmentObject() {
         JsonBuilderFactory factory = Json.createBuilderFactory(null);
         return factory.createObjectBuilder()
                 .add("id", 999999)
@@ -420,6 +417,19 @@ public class CommonRestControllerDepartmentTest {
                 .andDo(print());
     }
 
+    private JsonObject ignoredFieldsDepartmentObject() {
+        JsonBuilderFactory factory = Json.createBuilderFactory(null);
+        return factory.createObjectBuilder()
+                .add("id", 999999)
+                .add("name", "dept")
+                .add("hasChild", true)
+                .add("hasPositions", true)
+                .add("childDepartments", factory.createArrayBuilder()
+                        .add(factory.createObjectBuilder()
+                                .add("name", "fake")))
+                .build();
+    }
+
     @Test
     public void putIgnoreContactRewriteDepartmentTest() throws Exception {
         Department root = Department.builder().name("root").build();
@@ -496,6 +506,79 @@ public class CommonRestControllerDepartmentTest {
                 .andExpect(jsonPath("$.error").value("Bad Request"))
                 .andExpect(jsonPath("$.message").value("Duplicate department name"))
                 .andExpect(jsonPath("$.path").value("/restapi/department/" + childTwo.getId()))
+                .andDo(print());
+    }
+
+    @Test
+    public void putChangeParentDepartmentTest() throws Exception {
+        Department root = Department.builder().name("root").build();
+        Department childOne = Department.builder().name("testDept").build();
+        Department childTwo = Department.builder().name("childTwo").build();
+
+        departmentService.saveRootDepartment(root);
+        departmentService.saveChildDepartment(root.getId(), childOne);
+        departmentService.saveChildDepartment(root.getId(), childTwo);
+
+        mockMvc.perform(put("/restapi/department/" + childTwo.getId())
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(changeParentDepartmentObject(childOne.getId()).toString()))
+                .andExpect(status().isOk())
+                .andDo(print());
+
+        mockMvc.perform(get("/restapi/department/" + childTwo.getId()))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$.name").value("childTwo"))
+                .andExpect(jsonPath("$.parentId").value((int) childOne.getId()))
+                .andDo(print());
+    }
+
+    private JsonObject changeParentDepartmentObject(long parentId) {
+        JsonBuilderFactory factory = Json.createBuilderFactory(null);
+        return factory.createObjectBuilder()
+                .add("parentId", parentId)
+                .build();
+    }
+
+    @Test
+    public void putInvalidParentDepartmentTest() throws Exception {
+        Department root = Department.builder().name("root").build();
+        Department childOne = Department.builder().name("testDept").build();
+
+        departmentService.saveRootDepartment(root);
+        departmentService.saveChildDepartment(root.getId(), childOne);
+
+        mockMvc.perform(put("/restapi/department/" + childOne.getId())
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(changeParentDepartmentObject(99).toString()))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$.timestamp").isNumber())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.error").value("Bad Request"))
+                .andExpect(jsonPath("$.message").value("Invalid parent department"))
+                .andExpect(jsonPath("$.path").value("/restapi/department/" + childOne.getId()))
+                .andDo(print());
+    }
+
+    @Test
+    public void putInvalidLoopParentDepartmentTest() throws Exception {
+        Department root = Department.builder().name("root").build();
+        Department childOne = Department.builder().name("testDept").build();
+
+        departmentService.saveRootDepartment(root);
+        departmentService.saveChildDepartment(root.getId(), childOne);
+
+        mockMvc.perform(put("/restapi/department/" + childOne.getId())
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(changeParentDepartmentObject(childOne.getId()).toString()))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$.timestamp").isNumber())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.error").value("Bad Request"))
+                .andExpect(jsonPath("$.message").value("Invalid parent department"))
+                .andExpect(jsonPath("$.path").value("/restapi/department/" + childOne.getId()))
                 .andDo(print());
     }
 

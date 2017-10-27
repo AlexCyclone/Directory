@@ -1,5 +1,6 @@
-Directory API (ver 1.0.7):
+Directory API (ver 1.0.8):
 New:
+- "parentId" change parent in Department object if usage PUT request
 - tests added
 New:
 - nullable properties not serialize
@@ -25,7 +26,7 @@ Minimum filling of the object (api response):
     "contact": null,       - nullable
     "hasPositions": false, - property (will be ignore in put request)
     "hasChild": true,      - property (will be ignore in put request)
-    "parentId": 1          - can be null in root department (will be ignore in put request)
+    "parentId": 1          - can be null in root department
 }
 
 Maximum filling of the object:
@@ -146,7 +147,7 @@ Position object format detail:
 Minimum filling of the object:
 {
     "id": 7,                            - id (will be ignore in put request)
-    "namePosition": "Position Name",    - not null (duplicate support)
+    "name": "Position Name",    - not null (duplicate support)
     "person": null,                     - nullable
     "departmentId": 5                   - not null (will be ignore in put request)
 }
@@ -154,7 +155,7 @@ Minimum filling of the object:
 Maximum filling of the object:
 {
     "id": 7,
-    "namePosition": "Position Name",
+    "name": "Position Name",
     "person": {
         "id": 7,
         "surname": "Surname",

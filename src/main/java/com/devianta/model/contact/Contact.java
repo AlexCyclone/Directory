@@ -70,7 +70,7 @@ public class Contact {
         normaliseEmails();
         normalisePhones();
         normaliseOthers();
-        if (department == null && person == null) {
+        if (!(department == null ^ person == null)) {
             throw new IllegalArgumentException("Invalid Contact parameters");
         }
         return this;
